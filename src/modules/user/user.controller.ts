@@ -1,4 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { CreateUserDto } from './dto/create-user.dto';
+import { EditUserDto } from './dto/edit-user.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -6,29 +8,27 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Get()
-    get(@Request() req) {
-        console.log(req)
-        return {}
-        // return this.userService.getAll()
+    getAllUsers() {
+        return this.userService.getAll()
     }
 
-    @Get('/:name')
-    getByName(@Param('name') name: string) {
-        return this.userService.getByName(name)
+    @Get('/:id')
+    getUserById(@Param('id') id: string) {
+        return this.userService.getUserById(id)
     }
 
     @Post()
-    post(@Body() body: { id: string, name: string, age: number }) {
-        return this.userService.createNewUser(body.name, body.age)
+    createNewUser(@Body() body: CreateUserDto) {
+        return this.userService.createNewUser(body.firstName, body.lastName, body.yearOfBirth, body.favouriteColors)
     }
 
-    @Patch()
-    update(@Body() body: { name: string, age: number }) {
-        return this.userService.updateUser(body.name, body.age)
+    @Patch('/:id')
+    updateUser(@Param('id') id: string, @Body() body: EditUserDto) {
+        return this.userService.updateUser(id, body.firstName, body.lastName, body.yearOfBirth, body.favouriteColors)
     }
 
     @Delete('/:id')
-    delete(@Param('id') id: string) {
+    deleteUser(@Param('id') id: string) {
         return this.userService.deleteUser(id)
     }
 }
